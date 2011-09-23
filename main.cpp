@@ -60,7 +60,7 @@ int main() {
         printBoard(&game);
         switch((ch = getch())) {
             case KEY_MOUSE:
-                if(!gameOver && getmouse(&event) == OK) {
+                if(getmouse(&event) == OK) {
                     auto mx = event.x-OFFSETX;
                     mx     /= OFFSETX;
                     mx++;
@@ -70,14 +70,15 @@ int main() {
                         if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
                             if(game.check(mx-1,my-1)) {
                                 gameOver = true;
-                                printBoard(&game);
                                 mvprintw(18, 18, "Game Over");
                                 break;
                             }
                         }
                     }
 
-                    if(event.bstate & BUTTON2_CLICKED) {
+                    // TODO: Check if Button3 is always going to be
+                    // Right mouse
+                    if(event.bstate & BUTTON3_CLICKED) {
                         if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
                             if(game.flag(mx-1,my-1)) {
                                 gameOver = true;
