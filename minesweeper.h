@@ -5,9 +5,7 @@
 #include <tuple>
 #include <stdlib.h>
 #include <string>
-#include <sstream>
 #include <time.h>
-#include <iostream>
 
 using namespace std;
 using namespace boost;
@@ -37,8 +35,19 @@ class Minesweeper {
          *          value.                                                   *
          ********************************************************************/
         void calculateAdjBombs(int x, int y,vector<tuple<int,int>> *ignore);
-        
+
+        /*********************************************************************
+         *  Check if x is a valid region in board.                           *
+         *  \param int x                                                     *
+         *  \return bool    true if valid, else false.                       *
+         ********************************************************************/
         bool validX(int x);
+
+        /*********************************************************************
+         *  Check if y is a valid region in the board.                       *
+         *  \param int y                                                     *
+         *  \return bool    true if valid, else false.                       *
+         ********************************************************************/
         bool validY(int y);
 
     public:
@@ -67,9 +76,29 @@ class Minesweeper {
          *  \return bool    true if last bomb flagged, else false             *
          *********************************************************************/
         bool flag(int x, int y);
+
+        /**********************************************************************
+         *  Return a string of the current board.                             *
+         *  \return string                                                    *
+         *********************************************************************/
         string print();
+
+        /**********************************************************************
+         *  Return a string of the current board showing the bomb locations.  *
+         *  \return string                                                    *
+         *********************************************************************/
         string revealBoard();
+
+        /**********************************************************************
+         *  Get max x value.                                                  *
+         *  \return int                                                       *
+         *********************************************************************/
         int getX();
+
+        /**********************************************************************
+         *  Get max y value.                                                  *
+         *  \return int                                                       *
+         *********************************************************************/
         int getY();
 };
 

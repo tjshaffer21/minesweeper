@@ -1,7 +1,5 @@
-#include <boost/algorithm/string.hpp>
 #include <ncurses.h>
 #include <string>
-#include <iostream>
 #include "minesweeper.h"
 
 #define BUFFER 1024
@@ -86,7 +84,7 @@ int main(int argv, char** argc) {
                         if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
                             if(game->flag(mx-1,my-1)) {
                                 gameOver = true;
-                                mvprintw(18, 18, "Game Win");
+                                mvprintw(18, 18, "Game Win ");
                             }
                         }
                     }
