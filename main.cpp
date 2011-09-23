@@ -1,58 +1,104 @@
 #include <boost/algorithm/string.hpp>
+#include <ncurses.h>
+#include <string>
 #include <iostream>
 #include "minesweeper.h"
 
 #define BUFFER 1024
-
+#define OFFSETX 4
 using namespace std;
 
-bool flag(Minesweeper *game, string inpt) {
-    vector<string> strs;
-    boost::split(strs, inpt, boost::is_any_of(" "));
+bool gameOver = false;
 
-    if(strs.size() != 3) { return false; }
-
-    auto x = atoi(strs[1].c_str()) - 1;
-    auto y = atoi(strs[2].c_str()) - 1;
-
-    return game->flag(x,y);
+void startScreen() {
+    initscr();
+    clear();
+    noecho();
+    keypad(stdscr, 1);
+    cbreak();
+    mousemask(ALL_MOUSE_EVENTS, NULL);
 }
 
-bool check(Minesweeper *game, string inpt) {
-    vector<string> strs;
-    boost::split(strs, inpt, boost::is_any_of(" "));
+void printBoard(Minesweeper *game) {
+    auto maxX = game->getX();
+    auto maxY = game->getY();
+    
+    auto offset = OFFSETX;
+    for(auto i = 1; i <= maxX; ++i) {
+        mvprintw(0, offset, "%d", i);
+        offset += OFFSETX;
+    }
 
-    if(strs.size() != 3) { return false; }
+    if(gameOver)
+        mvprintw(1, 1, game->revealBoard().c_str());
+    else 
+        mvprintw(1, 1, game->print().c_str());
+    
+    offset = 1;
+    for(auto i = 1; i <= maxY; ++i) {
+        mvprintw(offset, 0, "%d", offset);
+        offset += 1;
+    }
 
-    auto x = atoi(strs[1].c_str()) - 1;
-    auto y = atoi(strs[2].c_str()) - 1;
+}
 
-    return game->check(x,y);
+void restoreScreen() {
+    echo();
+    endwin();
 }
 
 int main() {
-    Minesweeper game(2);
-    char input[BUFFER];
-    char ch; 
-    do {
-        game.print();
+    startScreen();
+    MEVENT event;
 
-        cout << "\n> ";
+    Minesweeper game(2);
+
+    auto maxX = game.getX();
+    auto maxY = game.getY();
+    int ch;
+    while(ch != 'q'){
+        printBoard(&game);
+        switch((ch = getch())) {
+            case KEY_MOUSE:
+                if(!gameOver && getmouse(&event) == OK) {
+                    auto mx = event.x-OFFSETX;
+                    mx     /= OFFSETX;
+                    mx++;
+                    auto my = event.y;
+                    if(event.bstate & BUTTON1_CLICKED) {
+
+                        if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
+                            if(game.check(mx-1,my-1)) {
+                                gameOver = true;
+                                printBoard(&game);
+                                mvprintw(18, 18, "Game Over");
+                                break;
+                            }
+                        }
+                    }
+
+                    if(event.bstate & BUTTON2_CLICKED) {
+                        if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
+                            if(game.flag(mx-1,my-1)) {
+                                gameOver = true;
+                                mvprintw(18, 18, "Game Win");
+                                break;
+                            }
+                        }
+                    }
+                }
+            case 'q':
+                break;
+        }
+        refresh();
+    /*    cout << "\n> ";
         cin.getline(input, BUFFER-1);
 
         auto inpt = string(input);
         if(inpt.substr(0,1) == "f") {
-            if(flag(&game, inpt)) {
-                cout << "\nGame Win\n" << endl;
-                break;
-            }
         } else if(inpt.substr(0,1) == "c") {
-            if(check(&game, inpt)) {
-                game.revealBoard();
-                cout << "\nGame Over\n" << endl;
-                break;
-            }
-        }
-    } while(input[0] != 'q');
+        }*/
+    }
+    restoreScreen();
 }
 

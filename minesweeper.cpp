@@ -26,6 +26,9 @@ Minesweeper::Minesweeper(short lvl) {
     generateLevel();
 }
 
+int Minesweeper::getX() { return maxX; }
+int Minesweeper::getY() { return maxY; }
+
 void Minesweeper::generateLevel() {
     typedef g_array::index index;
     for(index i = 0; i != board.size(); i++) {
@@ -144,72 +147,63 @@ inline bool Minesweeper::validY(int y) {
     return false;
 }
 
-void Minesweeper::print() {
-    auto k = 1;
-    cout << "    ";
-    for(k; k <= maxX; ++k) {
-        cout << " " << k << " ";
-    }
-    cout << endl;
-
-    k = 1;
+string Minesweeper::print() {
+    char input[1024];
+    string str = " ";
+    
     auto i = board.begin();
     for(; i != board.end(); ++i) {
-        if(k < 10)
-            cout << "  " << k << " ";
-        else
-            cout << " " << k << " ";
-
         auto j = (*i).begin();
         for(; j != (*i).end(); ++j) {
             if(get<2>(*j)) {
-                cout << " f ";
+                str += "  f ";
             } else {
                 if(get<1>(*j) == -1) {
-                    cout << " . ";
+                    str += "  . ";
                 } else {
-                    cout << " " << get<1>(*j) << " ";
+                    sprintf(input, "  %d ", get<1>(*j));
+
+                    string tmp(input);
+                    str += tmp;
                 }
             }
         }
-        k++;
-        cout << endl;
+        str += "\n";
+        str += "  ";  // Needed for ncurses
     }
+
+    return str;
 }
 
-void Minesweeper::revealBoard() {
-    auto k = 1;
-    cout << "    ";
-    for(k; k <= maxX; ++k) {
-        cout << " " << k << " ";
-    }
-    cout << endl;
-
-    k = 1;
+string Minesweeper::revealBoard() {
+    char input[1024];
+    string str = " ";
+    
     auto i = board.begin();
     for(; i != board.end(); ++i) {
-        if(k < 10)
-            cout << "  " << k << " ";
-        else
-            cout << " " << k << " ";
-
         auto j = (*i).begin();
         for(; j != (*i).end(); ++j) {
             if(get<0>(*j)) {
-                cout << " x ";
+                str += "  x ";
             } else {
                 if(get<2>(*j)) {
-                    cout << " f ";
+                    str += "  f ";
                 } else {
                     if(get<1>(*j) == -1) {
-                        cout << " . ";
+                        str += "  . ";
                     } else {
-                        cout << " " << get<1>(*j) << " ";
-                     }
+                        sprintf(input, "  %d ", get<1>(*j));
+
+                        string tmp(input);
+                        str += tmp;
+                    }
                 }
             }
         }
-        k++;
-        cout << endl;
+        str += "\n";
+        str += "  ";
     }
+
+    return str;
 }
+

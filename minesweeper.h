@@ -4,6 +4,8 @@
 #include <vector>
 #include <tuple>
 #include <stdlib.h>
+#include <string>
+#include <sstream>
 #include <time.h>
 #include <iostream>
 
@@ -65,8 +67,10 @@ class Minesweeper {
          *  \return bool    true if last bomb flagged, else false             *
          *********************************************************************/
         bool flag(int x, int y);
-        void print();
-        void revealBoard();
+        string print();
+        string revealBoard();
+        int getX();
+        int getY();
 };
 
 #endif
