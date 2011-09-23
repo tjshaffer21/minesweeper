@@ -6,16 +6,16 @@
 
 using namespace std;
 
-void flag(Minesweeper *game, string inpt) {
+bool flag(Minesweeper *game, string inpt) {
     vector<string> strs;
     boost::split(strs, inpt, boost::is_any_of(" "));
 
-    if(strs.size() != 3) { return; }
+    if(strs.size() != 3) { return false; }
 
     auto x = atoi(strs[1].c_str()) - 1;
     auto y = atoi(strs[2].c_str()) - 1;
 
-    game->flag(x,y);
+    return game->flag(x,y);
 }
 
 bool check(Minesweeper *game, string inpt) {
@@ -42,7 +42,10 @@ int main() {
 
         auto inpt = string(input);
         if(inpt.substr(0,1) == "f") {
-            flag(&game, inpt);
+            if(flag(&game, inpt)) {
+                cout << "\nGame Win\n" << endl;
+                break;
+            }
         } else if(inpt.substr(0,1) == "c") {
             if(check(&game, inpt)) {
                 game.revealBoard();

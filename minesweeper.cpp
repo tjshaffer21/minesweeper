@@ -1,7 +1,8 @@
 #include "minesweeper.h"
 
 Minesweeper::Minesweeper(short lvl) {
-    level = lvl;
+    level      = lvl;
+    numFlagged = 0;
 
     switch(lvl) {
         case 1:
@@ -64,22 +65,14 @@ void Minesweeper::generateLevel() {
 void Minesweeper::calculateAdjBombs(int x, int y, 
   vector<tuple<int, int>> *ignore) {
     if(!validX(x) || !validY(y)) { return; }
+    if(get<2>(board[y][x]) || get<1>(board[y][x]) != -1) { return; } 
     
     typedef tuple<int, int> tp;
     array<tp, 8> adjacents = { tp(x-1, y-1), tp(x, y-1), tp(x+1, y-1),
         tp(x-1, y), tp(x+1, y), tp(x-1, y+1), tp(x, y+1), tp(x+1, y+1) };
-
+    
+    auto num = 0;
     for(auto i = begin(adjacents); i != end(adjacents); ++i) {
-        // Ignore Flagged regions.
-        auto fx = get<0>(*i);
-        auto fy = get<1>(*i);
-
-        if(validX(fx) && validY(fy)) {
-            if(get<2>(board[fy][fx])) { 
-                ignore->push_back(tuple<int,int>(fx,fy));
-            }
-        }
-
         // Check ignore vector
         for(auto j = ignore->begin(); j != ignore->end(); ++j) {
             if(get<0>(*i) == get<0>(*j) && get<1>(*i) == get<1>(*j)) {
@@ -87,15 +80,11 @@ void Minesweeper::calculateAdjBombs(int x, int y,
                 get<1>(*i) = -1;
             }
         }
-    }
-    
-    auto num = 0;
-    for(auto i = begin(adjacents); i != end(adjacents); ++i) {
+
         auto xi = get<0>(*i);
         auto yi = get<1>(*i);
-        if(validX(xi) && validY(yi)) {
+        if(validX(xi) && validY(yi))
             if(get<0>(board[yi][xi])) { num++; }
-        }
     }
     
     get<1>(board[y][x]) = num;
@@ -108,9 +97,21 @@ void Minesweeper::calculateAdjBombs(int x, int y,
     }
 }
 
-void Minesweeper::flag(int x, int y) {
-    if(!validX(x) || !validY(y)) { return; }
+bool Minesweeper::flag(int x, int y) {
+    if(!validX(x) || !validY(y))  { return false; }
+    if(get<1>(board[y][x]) != -1) { return false; }
+    
     get<2>(board[y][x]) = !get<2>(board[y][x]);
+    if(get<2>(board[y][x]) && get<0>(board[y][x]))
+        numFlagged++;
+    else if(!get<2>(board[y][x]) && get<0>(board[y][x]))
+        numFlagged--;
+    
+
+    if(numFlagged == numBombs)
+        return true;
+    else
+        return false;
 }
 
 bool Minesweeper::check(int x, int y) {

@@ -19,6 +19,7 @@ class Minesweeper {
         g_array board;
         short level;        // Difficulty
         short numBombs;
+        short numFlagged;
         int maxX;
         int maxY;
 
@@ -56,7 +57,7 @@ class Minesweeper {
          *  \return bool    True if bomb, else false                          *
          *********************************************************************/
         bool check(int x, int y);
-        void flag(int x, int y);
+        bool flag(int x, int y);
         void print();
         void revealBoard();
 };
