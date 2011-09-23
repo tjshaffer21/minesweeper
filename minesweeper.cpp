@@ -56,7 +56,6 @@ void Minesweeper::generateLevel() {
 
         if(get<0>(board[y][x]) == false) {
             get<0>(board[y][x]) = true;
-
             i--;
         }
     }
@@ -67,13 +66,14 @@ void Minesweeper::calculateAdjBombs(int x, int y,
     if(!validX(x) || !validY(y)) { return; }
     if(get<2>(board[y][x]) || get<1>(board[y][x]) != -1) { return; } 
     
+    // tuple<0>: x
+    // tuple<1>: y
     typedef tuple<int, int> tp;
     array<tp, 8> adjacents = { tp(x-1, y-1), tp(x, y-1), tp(x+1, y-1),
         tp(x-1, y), tp(x+1, y), tp(x-1, y+1), tp(x, y+1), tp(x+1, y+1) };
     
     auto num = 0;
     for(auto i = begin(adjacents); i != end(adjacents); ++i) {
-        // Check ignore vector
         for(auto j = ignore->begin(); j != ignore->end(); ++j) {
             if(get<0>(*i) == get<0>(*j) && get<1>(*i) == get<1>(*j)) {
                 get<0>(*i) = -1;
@@ -116,7 +116,7 @@ bool Minesweeper::flag(int x, int y) {
 
 bool Minesweeper::check(int x, int y) {
     if(!validX(x) || !validY(y))  { return false; }
-    if(get<2>(board[y][x])) { return false; }
+    if(get<2>(board[y][x]))       { return false; }
     
     auto bomb = get<0>(board[y][x]);
     if(bomb == 1) {
@@ -131,17 +131,15 @@ bool Minesweeper::check(int x, int y) {
 }
 
 inline bool Minesweeper::validX(int x) {
-    if(x >= 0 && x < maxX) {
+    if(x >= 0 && x < maxX)
         return true;
-    }
 
     return false;
 }
 
 inline bool Minesweeper::validY(int y) {
-    if(y >= 0 && y < maxY) {
+    if(y >= 0 && y < maxY)
         return true;
-    }
 
     return false;
 }
@@ -149,7 +147,7 @@ inline bool Minesweeper::validY(int y) {
 void Minesweeper::print() {
     auto k = 1;
     cout << "    ";
-    for(k; k != maxX; ++k) {
+    for(k; k <= maxX; ++k) {
         cout << " " << k << " ";
     }
     cout << endl;
@@ -182,7 +180,7 @@ void Minesweeper::print() {
 void Minesweeper::revealBoard() {
     auto k = 1;
     cout << "    ";
-    for(k; k != maxX; ++k) {
+    for(k; k <= maxX; ++k) {
         cout << " " << k << " ";
     }
     cout << endl;

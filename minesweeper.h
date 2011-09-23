@@ -18,8 +18,8 @@ class Minesweeper {
         typedef multi_array<tuple<bool, short, bool>, 2> g_array;
         g_array board;
         short level;        // Difficulty
-        short numBombs;
-        short numFlagged;
+        short numBombs;     // Number of bombs
+        short numFlagged;   // Number of bombs currently flagged.
         int maxX;
         int maxY;
 
@@ -57,6 +57,13 @@ class Minesweeper {
          *  \return bool    True if bomb, else false                          *
          *********************************************************************/
         bool check(int x, int y);
+        
+        /**********************************************************************
+         *  Set the flag variable at specified region.                        *
+         *  \param int x                                                      *
+         *  \param int y                                                      *
+         *  \return bool    true if last bomb flagged, else false             *
+         *********************************************************************/
         bool flag(int x, int y);
         void print();
         void revealBoard();
