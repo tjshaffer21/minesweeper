@@ -47,17 +47,21 @@ void restoreScreen() {
     endwin();
 }
 
-int main() {
+int main(int argv, char** argc) {
+    auto level = 1; // Default is beginner
+    if(argv == 2)
+        level = atoi(argc[1]);
+
     startScreen();
     MEVENT event;
 
-    Minesweeper game(2);
+    Minesweeper *game = new Minesweeper(level);
+    auto maxX = game->getX();
+    auto maxY = game->getY();
 
-    auto maxX = game.getX();
-    auto maxY = game.getY();
     int ch;
     while(ch != 'q'){
-        printBoard(&game);
+        printBoard(game);
         switch((ch = getch())) {
             case KEY_MOUSE:
                 if(getmouse(&event) == OK) {
@@ -65,13 +69,13 @@ int main() {
                     mx     /= OFFSETX;
                     mx++;
                     auto my = event.y;
+
                     if(event.bstate & BUTTON1_CLICKED) {
 
                         if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
-                            if(game.check(mx-1,my-1)) {
+                            if(game->check(mx-1,my-1)) {
                                 gameOver = true;
                                 mvprintw(18, 18, "Game Over");
-                                break;
                             }
                         }
                     }
@@ -80,26 +84,23 @@ int main() {
                     // Right mouse
                     if(event.bstate & BUTTON3_CLICKED) {
                         if((mx > 0 && mx <= maxX) && (my > 0 && my <= maxY)) {
-                            if(game.flag(mx-1,my-1)) {
+                            if(game->flag(mx-1,my-1)) {
                                 gameOver = true;
                                 mvprintw(18, 18, "Game Win");
-                                break;
                             }
                         }
                     }
                 }
-            case 'q':
+                break;
+            case 'r':
+                delete game;
+                game     = new Minesweeper(level);
+                gameOver = false;
                 break;
         }
         refresh();
-    /*    cout << "\n> ";
-        cin.getline(input, BUFFER-1);
-
-        auto inpt = string(input);
-        if(inpt.substr(0,1) == "f") {
-        } else if(inpt.substr(0,1) == "c") {
-        }*/
     }
     restoreScreen();
+    delete game;
 }
 
