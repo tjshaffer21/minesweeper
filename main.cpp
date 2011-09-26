@@ -2,7 +2,6 @@
 #include <string>
 #include "minesweeper.h"
 
-#define BUFFER 1024
 #define OFFSETX 4
 using namespace std;
 
@@ -37,7 +36,6 @@ void printBoard(Minesweeper *game) {
         mvprintw(offset, 0, "%d", offset);
         offset += 1;
     }
-
 }
 
 void restoreScreen() {
