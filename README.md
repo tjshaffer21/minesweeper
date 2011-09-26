@@ -11,13 +11,17 @@ Minesweeper clone.
 Controls:
 ---------
 Left Mouse Button  - Reveal selected point.
+
 Right Mouse Button - Flag selected point.
+
 R - Restart game
+
 Q - Quit game
 
 Requirements:
 -------------
 ncurses
+
 c++0x capable compiler
 
 To Do:
